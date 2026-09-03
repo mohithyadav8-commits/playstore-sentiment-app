@@ -1,0 +1,5 @@
+streamlit
+google-play-scraper
+pandas
+vaderSentiment
+plotly
