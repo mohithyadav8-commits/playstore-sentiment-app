@@ -1,5 +1,6 @@
 streamlit
 google-play-scraper
 pandas
+numpy
 vaderSentiment
 plotly
