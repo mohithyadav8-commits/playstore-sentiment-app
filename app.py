@@ -9,8 +9,8 @@ import streamlit as st
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 st.set_page_config(
-    page_title="Enterprise App Review Intelligence",
-    page_icon="⚡",
+    page_title="App Store Market Intelligence | Research Study",
+    page_icon="🎓",
     layout="wide",
 )
 
@@ -143,131 +143,58 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("🛡️ Enterprise Play Store Review Intelligence")
+st.title("🎓 App Sentiment & User Experience Case Study")
 st.markdown(
     "<p style='color:#718096; font-size:1.05rem; margin-top:-10px;"
-    " margin-bottom:25px;'>Neumorphic Cognitive Analytics & Strategic Executive"
-    " Advisory</p>",
+    " margin-bottom:25px;'>An Academic Research Framework for Analyzing Mobile"
+    " App Feedback & Market Behavior</p>",
     unsafe_allow_html=True,
 )
 
 # Sidebar Controls
-st.sidebar.header("Navigation & Scope")
+st.sidebar.header("Research Parameters")
 analysis_mode = st.sidebar.radio(
-    "Operating Mode:", ["Single App Deep Dive", "Competitor Head-to-Head"]
+    "Study Scope:",
+    ["Single App Empirical Study", "Comparative Benchmark Study"]
 )
 
 total_target = st.sidebar.select_slider(
-    "Reviews to Ingest (per app):",
+    "Data Sample Target (per app):",
     options=[2000, 5000, 10000, 20000],
     value=5000,
 )
 market_country = st.sidebar.selectbox(
-    "Country Store:", ["us", "in", "gb", "ca", "au", "de", "fr"], index=0
+    "Market Region (ISO):",
+    ["us", "in", "gb", "ca", "au", "de", "fr"],
+    index=0
 )
 
 # Text Processing Constants
 STOPWORDS = {
-    "the",
-    "and",
-    "to",
-    "a",
-    "of",
-    "in",
-    "it",
-    "is",
-    "i",
-    "that",
-    "this",
-    "for",
-    "you",
-    "my",
-    "with",
-    "on",
-    "have",
-    "app",
-    "are",
-    "so",
-    "but",
-    "be",
-    "at",
-    "can",
-    "was",
-    "not",
-    "as",
-    "or",
-    "very",
-    "just",
-    "they",
-    "like",
-    "good",
-    "bad",
-    "all",
-    "from",
-    "an",
-    "too",
-    "really",
-    "please",
-    "when",
-    "even",
-    "more",
-    "get",
-    "will",
-    "would",
-    "after",
+    "the", "and", "to", "a", "of", "in", "it", "is", "i", "that", "this",
+    "for", "you", "my", "with", "on", "have", "app", "are", "so", "but",
+    "be", "at", "can", "was", "not", "as", "or", "very", "just", "they",
+    "like", "good", "bad", "all", "from", "an", "too", "really", "please",
+    "when", "even", "more", "get", "will", "would", "after"
 }
 
 THEME_TAXONOMY = {
-    "Crashes & Stability": [
-        "crash",
-        "freeze",
-        "bug",
-        "lag",
-        "glitch",
-        "close",
-        "black",
-        "stop",
+    "Technical Stability & Crashes": [
+        "crash", "freeze", "bug", "lag", "glitch", "close", "black", "stop"
     ],
-    "Billing, Ads & Subs": [
-        "ad",
-        "ads",
-        "money",
-        "pay",
-        "price",
-        "premium",
-        "subscription",
-        "cost",
-        "refund",
+    "Monetization & Ad Density": [
+        "ad", "ads", "money", "pay", "price", "premium", "subscription",
+        "cost", "refund"
     ],
-    "Account & Auth": [
-        "login",
-        "log",
-        "password",
-        "account",
-        "otp",
-        "verify",
-        "sign",
-        "email",
+    "Authentication & Security": [
+        "login", "log", "password", "account", "otp", "verify", "sign", "email"
     ],
-    "Speed & Battery": [
-        "battery",
-        "drain",
-        "slow",
-        "heat",
-        "ram",
-        "loading",
-        "data",
-        "storage",
+    "Resource Consumption & Latency": [
+        "battery", "drain", "slow", "heat", "ram", "loading", "data", "storage"
     ],
-    "UI & Experience": [
-        "update",
-        "interface",
-        "design",
-        "layout",
-        "font",
-        "dark",
-        "ugly",
-        "confusing",
+    "User Interface & Ergonomics": [
+        "update", "interface", "design", "layout", "font", "dark", "ugly",
+        "confusing"
     ],
 }
 
@@ -349,7 +276,7 @@ def phased_review_collector(app_id, target, country):
 
   while len(all_data) < target:
     pull_target = min(phase_size, target - len(all_data))
-    stat.info(f"[{app_id}] Fetching {len(all_data):,} of {target:,} reviews...")
+    stat.info(f"[{app_id}] Ingesting sample batch: {len(all_data):,} / {target:,}...")
     try:
       batch, token = reviews(
           app_id,
@@ -411,20 +338,20 @@ def process_dataframe(data):
 
 
 # =========================================================
-# MODE 1: SINGLE APP DEEP DIVE
+# MODE 1: SINGLE APP EMPIRICAL STUDY
 # =========================================================
-if analysis_mode == "Single App Deep Dive":
+if analysis_mode == "Single App Empirical Study":
   url_input = st.text_input(
-      "Play Store URL:",
+      "Target Application URL:",
       "https://play.google.com/store/apps/details?id=com.spotify.music",
   )
 
-  if st.button("Run Comprehensive Intelligence Pipeline"):
+  if st.button("Generate Case Study & Empirical Analysis"):
     app_id = extract_app_id(url_input)
     raw = phased_review_collector(app_id, total_target, market_country)
 
     if not raw:
-      st.error("No reviews retrieved. Check the App ID and region.")
+      st.error("No data retrieved. Verify the App ID and region parameters.")
       st.stop()
 
     df = process_dataframe(raw)
@@ -437,18 +364,18 @@ if analysis_mode == "Single App Deep Dive":
     churn_c = df["Churn_Risk"].sum()
 
     # Scorecard
-    st.markdown("### 📈 Executive Performance Scorecard")
+    st.markdown("### 📊 Empirical Corpus Overview")
     k1, k2, k3, k4, k5 = st.columns(5)
-    k1.metric("Ingested Reviews", f"{total:,}")
-    k2.metric("Average Rating", f"{df['score'].mean():.2f} ⭐")
-    k3.metric("Net Sentiment (NSS)", f"{nss:+.1f}")
-    k4.metric("Negative Ratio", f"{(neg_c/total)*100:.1f}%")
-    k5.metric("Churn Threats", f"{churn_c:,}")
+    k1.metric("Corpus Size", f"{total:,}")
+    k2.metric("Mean Score", f"{df['score'].mean():.2f} ⭐")
+    k3.metric("Net Sentiment Index", f"{nss:+.1f}")
+    k4.metric("Negative Polarity %", f"{(neg_c/total)*100:.1f}%")
+    k5.metric("Churn Mentions", f"{churn_c:,}")
 
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 
     # Visuals: Thematic Clustering & Version Health
-    st.subheader("🔍 Thematic Issue Clustering & Build Stability")
+    st.subheader("🔍 Thematic Issue Clustering & Build Stability Analysis")
     c_th1, c_th2 = st.columns(2)
 
     exploded_df = df.explode("Themes")
@@ -497,8 +424,8 @@ if analysis_mode == "Single App Deep Dive":
                 color="Sentiment_Polarity",
                 text="appVersion",
                 labels={
-                    "Avg_Rating": "Star Rating",
-                    "Sentiment_Polarity": "Sentiment Polarity",
+                    "Avg_Rating": "Star Rating (1-5)",
+                    "Sentiment_Polarity": "VADER Compound Polarity",
                 },
                 color_continuous_scale="RdYlGn",
             )
@@ -509,10 +436,10 @@ if analysis_mode == "Single App Deep Dive":
         )
         st.plotly_chart(fig_ver, use_container_width=True)
       else:
-        st.info("App versions not disclosed by this developer in review payloads.")
+        st.info("Version telemetry not supplied in reviewer payloads.")
 
     # Keywords Row
-    st.subheader("🗣️ Recurring Reviewer Keywords")
+    st.subheader("🗣️ Lexical Frequency: Dominant Reviewer Phrases")
     col_p1, col_p2 = st.columns(2)
     neg_phrases = extract_key_phrases(
         df[df["Sentiment"] == "Negative"]["cleaned_text"]
@@ -522,14 +449,14 @@ if analysis_mode == "Single App Deep Dive":
     )
 
     with col_p1:
-      st.write("**Top Complaint Drivers**")
+      st.write("**Frequently Recurrent Friction Collocations**")
       if neg_phrases:
-        p_df = pd.DataFrame(neg_phrases, columns=["Phrase", "Count"])
+        p_df = pd.DataFrame(neg_phrases, columns=["Collocation", "Frequency"])
         st.plotly_chart(
             px.bar(
                 p_df,
-                x="Count",
-                y="Phrase",
+                x="Frequency",
+                y="Collocation",
                 orientation="h",
                 color_discrete_sequence=["#e74c3c"],
             ).update_layout(
@@ -541,14 +468,14 @@ if analysis_mode == "Single App Deep Dive":
         )
 
     with col_p2:
-      st.write("**Top Praise Drivers**")
+      st.write("**Frequently Recurrent Value & Praise Collocations**")
       if pos_phrases:
-        p_df_pos = pd.DataFrame(pos_phrases, columns=["Phrase", "Count"])
+        p_df_pos = pd.DataFrame(pos_phrases, columns=["Collocation", "Frequency"])
         st.plotly_chart(
             px.bar(
                 p_df_pos,
-                x="Count",
-                y="Phrase",
+                x="Frequency",
+                y="Collocation",
                 orientation="h",
                 color_discrete_sequence=["#2ecc71"],
             ).update_layout(
@@ -559,37 +486,37 @@ if analysis_mode == "Single App Deep Dive":
             use_container_width=True,
         )
 
-    # Advanced Modules: Wishlist & Support Gap
-    st.subheader("💡 Feature Wishlist & Support Operations Audit")
+    # Advanced Modules: Wishlist & Support Operations
+    st.subheader("💡 Mined Community Feature Desiderata & Support Activity")
     col_w, col_s = st.columns(2)
 
     wishes = mine_wishlist(df["cleaned_text"])
     with col_w:
-      st.write("🎯 **Top Community Feature Requests (Auto-Mined)**")
+      st.write("🎯 **Identified Feature Demand Patterns (Regex Extracted)**")
       if wishes:
         wish_df = pd.DataFrame(
-            wishes, columns=["Feature Request Phrase", "Frequency"]
+            wishes, columns=["Mined Feature Demand Expression", "Corpus Frequency"]
         )
         st.dataframe(wish_df, use_container_width=True)
       else:
-        st.write("No explicit pattern matches found for direct feature requests.")
+        st.write("No explicit syntactic wishlist matches detected in this corpus.")
 
     with col_s:
-      st.write("🎧 **Customer Support Responsiveness**")
+      st.write("🎧 **Developer Support Interaction Rate**")
       crit_reviews = df[df["score"] <= 2]
       crit_total = len(crit_reviews)
       crit_replied = crit_reviews["has_reply"].sum()
       crit_rate = (crit_replied / crit_total * 100) if crit_total > 0 else 0.0
       avg_reply_time = crit_reviews["reply_delay_days"].dropna().median()
 
-      st.metric("Critical Review Reply Rate (1-2 Stars)", f"{crit_rate:.1f}%")
+      st.metric("Developer Reply Rate to Low Scores (1-2 Stars)", f"{crit_rate:.1f}%")
       if not np.isnan(avg_reply_time):
-        st.metric("Median Support Response Time", f"{avg_reply_time:.1f} Days")
+        st.metric("Median Support Turnaround Time", f"{avg_reply_time:.1f} Days")
       else:
-        st.metric("Median Support Response Time", "N/A (No replies logged)")
+        st.metric("Median Support Turnaround Time", "N/A (No replies observed)")
 
-    # Temporal Timing
-    st.subheader("⏰ Incident Timing: Peak Complaint Periods")
+    # Temporal Dynamics
+    st.subheader("⏰ Temporal Feedback Distribution (Day of Week)")
     dow_order = [
         "Monday",
         "Tuesday",
@@ -606,12 +533,12 @@ if analysis_mode == "Single App Deep Dive":
         .fillna(0)
         .reset_index()
     )
-    dow_summary.columns = ["Day of Week", "Negative Review Spike"]
+    dow_summary.columns = ["Day of Week", "Negative Volume"]
     st.plotly_chart(
         px.bar(
             dow_summary,
             x="Day of Week",
-            y="Negative Review Spike",
+            y="Negative Volume",
             color_discrete_sequence=["#e67e22"],
         ).update_layout(
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)"
@@ -620,65 +547,65 @@ if analysis_mode == "Single App Deep Dive":
     )
 
     # =========================================================================
-    # HIGH-DEPTH NEUMORPHIC AUTOMATED EXECUTIVE READOUT (CLEAN UNINDENTED HTML)
+    # ACADEMIC RESEARCH SUMMARY & EMPIRICAL FINDINGS (NEUMORPHIC CARDS)
     # =========================================================================
     st.markdown("<div style='height:30px'></div>", unsafe_allow_html=True)
-    st.markdown("## 📋 Automated Executive Readout & Strategic Action Plan")
+    st.markdown("## 📑 Research Synthesis & Academic Case Study")
 
     if nss >= 35:
       badge_class = "badge-healthy"
-      status_title = "HEALTHY / STRONG PRODUCT-MARKET FIT"
+      status_title = "NET POSITIVE SATISFACTION EQUILIBRIUM"
       status_desc = (
-          "Organic customer satisfaction is significantly outweighing friction"
-          " points. The core user loop remains intact."
+          "The qualitative data indicates strong user adoption and satisfaction. "
+          "Positive advocacy expressions significantly eclipse friction mentions, "
+          "suggesting high utility and healthy user retention dynamics."
       )
-      risk_level = "Low (Proactive Maintenance)"
     elif nss >= 0:
       badge_class = "badge-warning"
-      status_title = "MODERATE / CHURN WARNING"
+      status_title = "MIXED SENTIMENT EQUILIBRIUM"
       status_desc = (
-          "Noticeable degradation in user perception. Customer friction points"
-          " are neutralizing positive retention drivers."
+          "The qualitative evaluation reveals a divided user base. "
+          "Emerging friction factors are directly offsetting positive utility, "
+          "indicating that user experience regressions are dampening customer sentiment."
       )
-      risk_level = "Elevated (Immediate Product Intervention Needed)"
     else:
       badge_class = "badge-critical"
-      status_title = "CRITICAL / SEVERE ATTRITION THREAT"
+      status_title = "SYSTEMIC DISSATISFACTION REGIME"
       status_desc = (
-          "Negative sentiment dominates the feedback loop. Attrition rates and"
-          " negative word-of-mouth are actively degrading brand equity."
+          "Negative sentiment dominates the sampled dataset. High friction frequency "
+          "and recurring departure expressions indicate structural problems with software stability, "
+          "monetization mechanisms, or user interface satisfaction."
       )
-      risk_level = "High / Emergency Level"
 
-    # Card 1: Strategic Health Matrix
+    # Card 1: Corpus Evaluation Matrix
     card_1_html = f"""<div class="neu-card">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-<h3 style="margin: 0;">1. Strategic Product Health Matrix</h3>
+<h3 style="margin: 0;">1. Research Corpus Evaluation Matrix</h3>
 <span class="{badge_class}">{status_title}</span>
 </div>
 <p style="color: #4a5568; font-size: 1.05rem; line-height: 1.6;">{status_desc}</p>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px;">
 <div class="neu-card-inset">
-<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Net Sentiment Index</span>
-<h2 style="margin: 5px 0 0 0; color: #2d3748;">{nss:+.1f} <span style="font-size:0.85rem; color:#a0aec0;">/ 100</span></h2>
+<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Net Sentiment Index (NSS)</span>
+<h2 style="margin: 5px 0 0 0; color: #2d3748;">{nss:+.1f} <span style="font-size:0.85rem; color:#a0aec0;">[-100 to +100]</span></h2>
 </div>
 <div class="neu-card-inset">
-<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Estimated Attrition Exposure</span>
-<h2 style="margin: 5px 0 0 0; color: #e53e3e;">{(churn_c/total)*100:.1f}% <span style="font-size:0.85rem; color:#a0aec0;">({churn_c:,} users)</span></h2>
+<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Observed Attrition Intent</span>
+<h2 style="margin: 5px 0 0 0; color: #e53e3e;">{(churn_c/total)*100:.1f}% <span style="font-size:0.85rem; color:#a0aec0;">({churn_c:,} records)</span></h2>
 </div>
 <div class="neu-card-inset">
-<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Negative Friction Share</span>
+<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Negative Review Share</span>
 <h2 style="margin: 5px 0 0 0; color: #dd6b20;">{(neg_c/total)*100:.1f}%</h2>
 </div>
 <div class="neu-card-inset">
-<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Systemic Risk Rating</span>
-<h3 style="margin: 5px 0 0 0; color: #2d3748; font-size: 1.1rem;">{risk_level}</h3>
+<span style="font-size: 0.8rem; color: #718096; font-weight: 600; text-transform: uppercase;">Sample Confidence</span>
+<h3 style="margin: 5px 0 0 0; color: #2d3748; font-size: 1.1rem;">N = {total:,} Reviews</h3>
 </div>
 </div>
 </div>"""
     st.markdown(card_1_html, unsafe_allow_html=True)
 
-    # Dynamic Extraction for Engineering Actions
+    # Dynamic Thematic Data for Findings
     non_gen_themes = theme_df[theme_df["Root Cause Theme"] != "General Feedback"]
     top_complaint = (
         non_gen_themes.iloc[0]["Root Cause Theme"]
@@ -693,7 +620,7 @@ if analysis_mode == "Single App Deep Dive":
     second_complaint = (
         non_gen_themes.iloc[1]["Root Cause Theme"]
         if len(non_gen_themes) > 1
-        else "UI Navigation"
+        else "UI Ergonomics"
     )
     second_complaint_vol = (
         non_gen_themes.iloc[1]["Negative Mentions"]
@@ -703,40 +630,59 @@ if analysis_mode == "Single App Deep Dive":
     neg_phrase_str = (
         ", ".join([f"<code>{p[0]}</code>" for p in neg_phrases[:3]])
         if neg_phrases
-        else "general error terms"
+        else "none detected"
     )
 
-    # Card 2: Engineering Sprint Backlog
+    # Card 2: Empirical Findings: Friction Vectors
     card_2_html = f"""<div class="neu-card">
-<h3 style="margin-top: 0;">2. Engineering & Technical Sprint Priorities</h3>
-<p style="color: #718096; margin-bottom: 20px;">Data-driven sprint tickets derived directly from reviewer friction clusters.</p>
+<h3 style="margin-top: 0;">2. Empirical Findings: Dominant Friction Vectors</h3>
+<p style="color: #718096; margin-bottom: 20px;">Analysis of observed failure modes and dissatisfaction triggers identified across the study corpus.</p>
 <div class="neu-card-inset" style="border-left: 4px solid #e53e3e; margin-bottom: 12px;">
-<strong style="color: #c53030;">[P0 - Immediate Hotfix] Mitigate {top_complaint} Friction</strong>
+<strong style="color: #c53030;">Primary Failure Vector: {top_complaint}</strong>
 <p style="margin: 6px 0 0 0; color: #4a5568;">
-Accounting for <strong>{top_complaint_vol:,} verified complaints</strong>, this is the single highest volume issue. Engineering must immediately open an incident audit covering timeout limits, gateway fallbacks, or crash stack traces associated with this domain.
+Representing <strong>{top_complaint_vol:,} coded negative instances</strong>, this category constitutes the largest single source of measured user dissatisfaction. The textual patterns indicate frequent user frustration with backend latency, runtime interruptions, or monetization barriers within this functional domain.
 </p>
 </div>
 <div class="neu-card-inset" style="border-left: 4px solid #dd6b20; margin-bottom: 12px;">
-<strong style="color: #c05621;">[P1 - Next Sprint Scope] Optimize {second_complaint}</strong>
+<strong style="color: #c05621;">Secondary Failure Vector: {second_complaint}</strong>
 <p style="margin: 6px 0 0 0; color: #4a5568;">
-Logged <strong>{second_complaint_vol:,} friction reports</strong>. Assign QA and frontend leads to perform audit passes specifically addressing this vector in the upcoming release cycle.
+Accounting for <strong>{second_complaint_vol:,} logged instances</strong>. Users commonly report navigational barriers, cognitive friction, or workflow degradation following specific application interface updates.
 </p>
 </div>
 <div class="neu-card-inset" style="border-left: 4px solid #3182ce;">
-<strong style="color: #2b6cb0;">[P2 - Keyword Remediation] Search Logs for High-Frequency Trigger Terms</strong>
+<strong style="color: #2b6cb0;">High-Frequency Collocations: Lexical Analysis</strong>
 <p style="margin: 6px 0 0 0; color: #4a5568;">
-Automated text parsing detected peak recurrence for: {neg_phrase_str}. Cross-reference Sentry / Datadog telemetry with these strings.
+Automated lexical analysis identified significant recurrence for the bigrams {neg_phrase_str}. This highlights common situational contexts where users encounter obstacles.
 </p>
 </div>
 </div>"""
     st.markdown(card_2_html, unsafe_allow_html=True)
 
-    # Card 3: VoC Feature Roadmap
+    # Card 3: Core Retention & Brand Value Drivers (Positive Points)
+    pos_phrase_str = (
+        ", ".join([f"<code>{p[0]}</code>" for p in pos_phrases[:4]])
+        if pos_phrases
+        else "broad satisfaction expressions"
+    )
+    card_3_html = f"""<div class="neu-card">
+<h3 style="margin-top: 0;">3. Core Retention & Product Value Drivers</h3>
+<p style="color: #718096; margin-bottom: 15px;">Documented factors contributing positively to user advocacy and ongoing platform engagement.</p>
+<div class="neu-card-inset" style="border-left: 4px solid #38a169;">
+<strong style="color: #2e7d32;">Observed Utility Strengths</strong>
+<p style="margin: 6px 0 0 0; color: #4a5568;">
+Positive reviews in this sample consistently associate platform value with {pos_phrase_str}. 
+These recurring themes illustrate the core value proposition that drives ongoing usage and favorable sentiment ratings.
+</p>
+</div>
+</div>"""
+    st.markdown(card_3_html, unsafe_allow_html=True)
+
+    # Card 4: Community Feature Desiderata
     st.markdown(
-        '<div class="neu-card"><h3 style="margin-top: 0;">3. Voice of the'
-        " Customer (VoC): Feature Demand Roadmap</h3><p style='color: #718096;"
-        " margin-bottom: 15px;'>Mined feature demand patterns expressing"
-        " explicit user appetite.</p>",
+        '<div class="neu-card"><h3 style="margin-top: 0;">4. Observed Community'
+        " Feature Desiderata</h3><p style='color: #718096;"
+        " margin-bottom: 15px;'>Documented unmet user needs extracted via"
+        " regular-expression intent mining.</p>",
         unsafe_allow_html=True,
     )
     if wishes:
@@ -744,9 +690,9 @@ Automated text parsing detected peak recurrence for: {neg_phrase_str}. Cross-ref
       for idx, (wish, freq) in enumerate(wishes[:5], start=1):
         wishlist_records.append({
             "Rank": f"#{idx}",
-            "Requested Feature Expression": f'"{wish}"',
-            "Demand Frequency": f"{freq} users",
-            "Status": "🔥 High Priority" if freq >= 4 else "⚡ Roadmap Candidate",
+            "Extracted User Expression": f'"{wish}"',
+            "Sample Occurrences": f"{freq} times",
+            "Observed Demand": "High Demand Signal" if freq >= 4 else "Moderate Demand Signal",
         })
       st.dataframe(
           pd.DataFrame(wishlist_records),
@@ -754,79 +700,73 @@ Automated text parsing detected peak recurrence for: {neg_phrase_str}. Cross-ref
           hide_index=True,
       )
     else:
-      st.info("No high-confidence structured wishlist items extracted.")
+      st.info("No structured wishlist signals were detected in this corpus.")
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Card 4: Retention & Support SLA Protocol
-    card_4_html = f"""<div class="neu-card">
-<h3 style="margin-top: 0;">4. Churn Interception & Support Operations Audit</h3>
+    # Card 5: Research Methodology & Limitations Note
+    card_5_html = f"""<div class="neu-card">
+<h3 style="margin-top: 0;">5. Research Methodology & Dataset Notes</h3>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 <div class="neu-card-inset">
-<strong style="color: #c53030;">🚨 Churn Interception Playbook</strong>
-<p style="color: #4a5568; font-size: 0.95rem; margin-top: 8px; line-height: 1.5;">
-Found <strong>{churn_c:,} reviews containing explicit departure intent</strong> (e.g., "uninstalled", "moving to competitor").
+<strong style="color: #4a5568;">Methodological Notes</strong>
+<p style="color: #718096; font-size: 0.9rem; margin-top: 8px; line-height: 1.5;">
+Sentiments were computed using rule-based VADER lexicon scoring over cleaned text bodies. 
+Topic classifications rely on a pre-defined taxonomy of domain-specific keywords.
 </p>
-<ul style="color: #4a5568; font-size: 0.9rem; padding-left: 20px; margin-top: 5px;">
-<li>Deploy automated Google Play Console reply templates to 1-star reviews offering resolution paths.</li>
-<li>Verify if recent monetization or subscription wall updates altered the free-tier experience.</li>
-</ul>
 </div>
 <div class="neu-card-inset">
-<strong style="color: #2b6cb0;">🎧 Support SLA Performance</strong>
-<p style="color: #4a5568; font-size: 0.95rem; margin-top: 8px; line-height: 1.5;">
-Support response coverage on 1-2 star reviews stands at <strong>{crit_rate:.1f}%</strong>.
+<strong style="color: #4a5568;">Sampling Parameters</strong>
+<p style="color: #718096; font-size: 0.9rem; margin-top: 8px; line-height: 1.5;">
+Total corpus: <strong>{total:,} reviews</strong> pulled chronologically via Google Play pagination. 
+Regional store: <strong>{market_country.upper()}</strong>.
 </p>
-<ul style="color: #4a5568; font-size: 0.9rem; padding-left: 20px; margin-top: 5px;">
-<li>Target an industry benchmark of <strong>&gt;40% reply coverage</strong> on critical ratings.</li>
-<li>Maintain resolution response latency within <strong>&lt;48 hours</strong> to maximize re-rating potential.</li>
-</ul>
 </div>
 </div>
 </div>"""
-    st.markdown(card_4_html, unsafe_allow_html=True)
+    st.markdown(card_5_html, unsafe_allow_html=True)
 
     # Export Button
     st.download_button(
-        "📥 Export Full Dataset (CSV)",
+        "📥 Export Research Corpus (CSV)",
         data=df.to_csv(index=False),
-        file_name=f"{app_id}_full_intelligence.csv",
+        file_name=f"{app_id}_academic_corpus.csv",
         mime="text/csv",
     )
 
 # =========================================================
-# MODE 2: COMPETITOR HEAD-TO-HEAD
+# MODE 2: COMPARATIVE BENCHMARK STUDY
 # =========================================================
 else:
   col_c1, col_c2 = st.columns(2)
   with col_c1:
     app1_url = st.text_input(
-        "App A URL:",
+        "Application A URL:",
         "https://play.google.com/store/apps/details?id=com.spotify.music",
     )
   with col_c2:
     app2_url = st.text_input(
-        "App B URL:",
+        "Application B URL:",
         "https://play.google.com/store/apps/details?id=com.apple.android.music",
     )
 
-  if st.button("Run Head-to-Head Benchmark"):
+  if st.button("Generate Comparative Study"):
     id_a = extract_app_id(app1_url)
     id_b = extract_app_id(app2_url)
 
-    with st.spinner("Extracting App A reviews..."):
+    with st.spinner(f"Ingesting corpus for {id_a}..."):
       raw_a = phased_review_collector(id_a, total_target, market_country)
-    with st.spinner("Extracting App B reviews..."):
+    with st.spinner(f"Ingesting corpus for {id_b}..."):
       raw_b = phased_review_collector(id_b, total_target, market_country)
 
     if not raw_a or not raw_b:
-      st.error("Failed to fetch reviews for one or both apps. Check identifiers.")
+      st.error("Failed to collect review records for one or both applications.")
       st.stop()
 
     df_a = process_dataframe(raw_a)
     df_b = process_dataframe(raw_b)
 
-    df_a["App"] = id_a
-    df_b["App"] = id_b
+    df_a["Application"] = id_a
+    df_b["Application"] = id_b
     combined = pd.concat([df_a, df_b], ignore_index=True)
 
     nss_a = (
@@ -844,7 +784,7 @@ else:
         / len(df_b)
     ) * 100
 
-    st.markdown("### 🥊 Head-to-Head Scorecard")
+    st.markdown("### 📊 Comparative Analysis Scorecard")
     m1, m2, m3, m4 = st.columns(4)
     m1.metric(f"{id_a} Rating", f"{df_a['score'].mean():.2f} ⭐")
     m2.metric(f"{id_b} Rating", f"{df_b['score'].mean():.2f} ⭐")
@@ -852,11 +792,11 @@ else:
     m4.metric(f"{id_b} Net Sentiment", f"{nss_b:+.1f}")
 
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-    st.subheader("Theme Comparison: Complaint Breakdown")
+    st.subheader("Cross-Platform Thematic Friction Comparison")
     comp_exploded = combined.explode("Themes")
     comp_neg = (
         comp_exploded[comp_exploded["Sentiment"] == "Negative"]
-        .groupby(["Themes", "App"])
+        .groupby(["Themes", "Application"])
         .size()
         .reset_index(name="Negative Mentions")
     )
@@ -866,7 +806,7 @@ else:
             comp_neg,
             x="Themes",
             y="Negative Mentions",
-            color="App",
+            color="Application",
             barmode="group",
             color_discrete_sequence=["#3182ce", "#e53e3e"],
         ).update_layout(
